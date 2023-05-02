@@ -94,6 +94,36 @@
                 }
                 }
         </script>
+        <script>
+            async function removeAllItemsFromCart() {
+                // Get the cart ID from the cart page URL
+                const cartId = window.location.href.split('#')[1];
+
+                // Get the cart contents using Storefront API
+                const response = await fetch(`/api/storefront/carts/${cartId}`, {
+                    headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    }
+                });
+
+                const cart = await response.json();
+
+                // Remove all items from the cart
+                cart.lineItems.physicalItems.forEach(item => {
+                    fetch(`/api/storefront/carts/${cartId}/items/${item.id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                    });
+                });
+
+                // Notify the user that all items have been removed from the cart
+                alert('All items have been removed from the cart.');
+                }
+    
+        </script>
         <script async defer src="{{cdn 'assets/dist/theme-bundle.main.js' resourceHint='preload' as='script'}}" onload="onThemeBundleMain()"></script>
 
         {{{footer.scripts}}}
